@@ -187,3 +187,515 @@ int main() {
 }
 
 Task 2:
+#include <iostream>
+#include <string>
+using namespace std;
+
+// 24K-0010 WAMIZA NOMAN
+
+class Ghost {
+ protected:
+    string workerName;
+    int scareLevel;
+
+ public:
+    Ghost(string name, int level) : workerName(name), scareLevel(level) {}
+    virtual void haunt() const = 0;
+
+    int getScareLevel() const {
+        return scareLevel;
+    }
+
+    virtual Ghost* clone() const = 0;
+
+    friend ostream& operator<<(ostream& os, const Ghost& g) {
+        os<<"Ghost Actor: "<<g.workerName<<", Scare Level: "<<g.scareLevel;
+        return os;
+    }
+
+    virtual Ghost* operator+(const Ghost& other) const {
+        return new Poltergeist(workerName + "+" + other.workerName, scareLevel + other.scareLevel);
+    }
+
+    virtual ~Ghost() {}
+};
+
+class Poltergeist : public Ghost {
+ public:
+    Poltergeist(string name, int level) : Ghost(name, level) {}
+    void haunt() const override {
+        cout<<workerName<<" throws objects"<<endl;
+    }
+    Ghost* clone() const override {
+        return new Poltergeist(*this);
+    }
+};
+
+class Banshee : public Ghost {
+ public:
+    Banshee(string name, int level) : Ghost(name, level) {}
+    void haunt() const override {
+        cout<<workerName<<" screams loudly!"<<endl;
+    }
+    Ghost* clone() const override {
+        return new Banshee(*this);
+    }
+};
+
+class ShadowGhost : public Ghost {
+ public:
+    ShadowGhost(string name, int level) : Ghost(name, level) {}
+    void haunt() const override {
+        cout<<workerName<<" whispers creepily"<<endl;
+    }
+    Ghost* clone() const override {
+        return new ShadowGhost(*this);
+    }
+};
+
+class ShadowPoltergeist : public Ghost {
+ public:
+    ShadowPoltergeist(string name, int level) : Ghost(name, level) {}
+    void haunt() const override {
+        cout<<workerName<<" throws objects and whispers creepily!"<<endl;
+    }
+    Ghost* clone() const override {
+        return new ShadowPoltergeist(*this);
+    }
+};
+
+class Visitor {
+ public:
+    string name;
+    int bravery;
+
+    Visitor(string n, int b) : name(n), bravery(b) {}
+
+    void react(int ghostScareLevel) const {
+        if (bravery<=4 && ghostScareLevel>bravery) {
+            cout<<name<<"Run Away while screaming!"<<endl;
+        } 
+		else if (bravery >= 8 && ghostScareLevel < bravery) {
+            cout<<name<<"laughs and mocks the ghost!"<<endl;
+        } 
+		else {
+            cout<<name<<"Shakes with a nervous voice..."<<endl;
+        }
+    }
+};
+
+class HauntedHouse {
+ private:
+    string name;
+    Ghost* ghosts[10];
+    int ghostCount;
+
+ public:
+    HauntedHouse(string n) : name(n), ghostCount(0) {}
+
+    void addGhost(Ghost* g) {
+        if (ghostCount<10)
+            ghosts[ghostCount++]=g->clone();
+    }
+
+    void display() const {
+        cout<<"Haunted House: "<<name<<endl;
+        for (int i=0; i<ghostCount; ++i) {
+            cout<<*ghosts[i]<<endl;
+        }
+    }
+
+    void simulate(Visitor visitors[], int numVisitors) const {
+        cout<<"\nSimulation for Haunted House: "<<name<<endl;
+        for (int i=0; i<numVisitors; ++i) {
+            cout<<"\nVisitor: "<<visitors[i].name<<endl;
+            for (int j=0; j<ghostCount; ++j) {
+                ghosts[j]->haunt();
+                visitors[i].react(ghosts[j]->getScareLevel());
+            }
+        }
+    }
+
+    ~HauntedHouse() {
+        for (int i=0; i<ghostCount; ++i)
+            delete ghosts[i];
+    }
+};
+
+void Visit(Visitor visitors[], int numVisitors, const HauntedHouse& house) {
+    house.simulate(visitors, numVisitors);
+}
+
+int main() {
+    Visitor visitors[] = {
+        Visitor("Ali", 3),
+        Visitor("Bilal", 6),
+        Visitor("Dua", 9)
+    };
+    
+    cout<<"WAMIZA NOMAN 24K-0010\n"<<endl;
+
+    HauntedHouse house1("Old Manor");
+    house1.addGhost(new Poltergeist("Hamza", 5));
+    house1.addGhost(new Banshee("Sana", 7));
+    house1.addGhost(new ShadowGhost("Nashit", 4));
+    HauntedHouse house2("Whispering Halls");
+    house2.addGhost(new ShadowPoltergeist("Maria", 8));
+    house2.addGhost(new Banshee("Faraz", 6));
+    HauntedHouse house3("Creepy Cellar");
+    house3.addGhost(new ShadowGhost("Ayesha", 3));
+    house3.addGhost(new Poltergeist("Usman", 9));
+    Visit(visitors, 3, house1);
+    Visit(visitors, 3, house2);
+    Visit(visitors, 3, house3);
+
+    return 0;
+}
+
+Task 3:
+#include <iostream>
+#include <string>
+using namespace std;
+
+// 24K-0010 WAMIZA NOMAN
+
+class vehicle {
+ protected:
+    string vehicleid;
+    float speed;
+    float capacity;
+    float energyeffeciency;
+    static int totaldeliveries;
+ public:
+    vehicle(string id, float sp, float cap, float eff) : vehicleid(id), speed(sp), capacity(cap), energyeffeciency(eff) {
+        totaldeliveries++;
+    }
+
+    virtual void move() {
+        cout<<"vehicle "<<vehicleid<<" is moving generically."<<endl;
+    }
+
+    virtual void command(string action, int packageid) {
+        cout<<"Base vehicle processing command: "<<action<<" for package "<<packageid<<endl;
+    }
+
+    virtual void command(string action, int packageid, string urgency) {
+        cout<<"Base vehicle processing command with urgency: "<<action<<", Package: "<<packageid<<", Urgency: "<<urgency<<endl;
+    }
+
+    virtual float calculateETA(float distance) {
+        return distance / speed;
+    }
+
+    static int gettotaldeliveries() {
+        return totaldeliveries;
+    }
+
+    friend bool operator==(const vehicle& v1, const vehicle& v2);
+    friend vehicle resolveconflict(const vehicle& v1, const vehicle& v2);
+};
+
+int vehicle::totaldeliveries = 0;
+
+bool operator==(const vehicle& v1, const vehicle& v2) {
+    return (v1.speed == v2.speed && v1.capacity == v2.capacity && v1.energyefficiency == v2.energyefficiency);
+}
+
+vehicle resolveconflict(const vehicle& v1, const vehicle& v2) {
+    if ((v1.speed+v1.energyeffeciency)>(v2.speed+v2.energyeffeciency)) 
+	{
+        return v1;
+    } 
+	else 
+	{
+        return v2;
+    }
+}
+
+class ramzandrone : public vehicle {
+public:
+    ramzandrone(string id) : vehicle(id, 150.0, 5.0, 90.0) {}
+
+    void move() override {
+        cout<<"Drone "<<vehicleid<<" has taken flight and is navigating through the sky." <<endl;
+    }
+
+    void command(string action, int packageid) override {
+        cout<<"Drone "<<vehicleid<<" delivering package "<<packageid<<" at normal speed."<<endl;
+    }
+
+    void command(string action, int packageid, string urgency) override {
+        if (urgency=="urgent")
+            cout<<"Drone "<<vehicleid<<" delivering URGENT Iftar package "<<packageid<<" at high speed."<<endl;
+        else
+            command(action, packageid);
+    }
+};
+
+class ramzantimeship : public vehicle {
+public:
+    ramzantimeship(string id) : vehicle(id, 100.0, 10.0, 80.0) {}
+
+    void move() override {
+        cout<<"Timeship "<<vehicleid<<" verifying historical consistency and time traveling."<<endl;
+    }
+
+    void command(string action, int packageid) override {
+        cout<<"Timeship "<<vehicleid<<" delivering package "<<packageid<<" in timeline."<<endl;
+    }
+
+    void command(string action, int packageid, string urgency) override {
+        if (urgency == "urgent")
+            cout<<"TimeShip "<<vehicleid<<" is validating  sensitive of URGENT package "<<packageid<<" within historical context."<<endl;
+        else
+            command(action, packageid);
+    }
+};
+
+class ramzanhyperpod : public vehicle {
+public:
+    ramzanhyperpod(string id) : vehicle(id, 120.0, 50.0, 85.0) {}
+
+    void move() override {
+        cout<<"HyperPod "<<vehicleid<<" navigating underground tunnel network."<<endl;
+    }
+
+    void command(string action, int packageid) override {
+        cout<<"HyperPod "<<vehicleid<<" transporting bulk package "<<packageid<<endl;
+    }
+
+    void command(string action, int packageid, string urgency) override {
+        if (urgency == "urgent")
+            cout<<"HyperPod "<<vehicleid<<" handling URGENT bulk delivery for package "<<packageid<<endl;
+        else
+            command(action, packageid);
+    }
+};
+
+int main() {
+	cout<<"WAMIZA NOMAN 24K-0010\n"<<endl;
+
+    ramzandrone drone1("DRN0017");
+    ramzantimeship ship1("TS003");
+    ramzanhyperpod pod1("HYP055");
+    drone1.move();
+    ship1.move();
+    pod1.move();
+    drone1.command("Deliver", 301);
+    ship1.command("Deliver", 502, "urgent");
+    pod1.command("Deliver", 303, "normal");
+    cout<< "Current count of active deliveries: "  << vehicle::gettotaldeliveries() << "\n";
+    vehicle best = resolveconflict(drone1, pod1);
+    cout<< "Best vehicle for the task has ID: " << best.calculateETA(100.0) << " hours ETA for 100km.\n";
+    return 0;
+}
+
+Task 4:
+#include <iostream>
+#include <string>
+using namespace std;
+
+// 24k-0010 WAMIZA NOMAN
+
+long calculateHash(string password) {
+    long hash = 5381;
+    for (char c : password) {
+        hash = hash * 33 + c;=
+   }
+    return hash;
+}
+
+class User {
+ protected:
+    string name,id,email;
+    long hashedPassword;
+    string permissions[3];
+
+ public:
+    User(string name, string id, string permissions[], int permSize, string email, string password) {
+        this->name = name;
+        this->id = id;
+        this->email = email;
+        for (int i = 0; i < permSize; i++) {
+            this->permissions[i] = permissions[i];
+        }
+        this->hashedPassword = calculateHash(password);
+    }
+
+    string getName() const {
+        return name;
+    }
+
+    bool authenticate(string password) {
+        return this->hashedPassword == calculateHash(password);
+    }
+
+    virtual void display() {
+        cout<<"User Information:"<<endl<<"Name: "<<name<<endl<<"ID: "<<id<<endl<<"Email: "<<email<<endl<<"Permissions: ";
+        for (const string &permission : permissions) {
+            cout << permission << " ";
+        }
+        cout << endl;
+    }
+
+    bool accessLab(string action) {
+        for (const string &permission : permissions) {
+            if (permission == action) {
+                cout<<"Access granted: "<<name<<" can perform "<<action<<endl;
+                return true;
+            }
+        }
+        cout<<"Access denied: "<<name<<" doesn't have permission to "<<action<<endl;
+        return false;
+    }
+};
+
+class Student : public User {
+private:
+    int assignments[10]; 
+    int assignmentCount;
+
+ public:
+    Student(string name, string id, string email, string password)
+        : User(name, id, new string[1]{"submit_assignment"}, 1, email, password), assignmentCount(0) {}
+
+    void display() override {
+        cout<<"--- Student Information ---"<<endl;
+        User::display();
+        cout<<"Assignments Status: ";
+        for (int i=0; i<assignmentCount; i++) {
+            cout<<"Assignment "<<(i+1)<<": "<<(assignments[i]==1?"Submitted" : "Pending")<< " | ";
+        }
+        cout<<endl;
+    }
+
+    void addAssignment() {
+        if (assignmentCount < 10) {
+            assignments[assignmentCount++] = 0;
+            cout<<"New assignment added. Total assignments: "<<assignmentCount<<endl;
+        } 
+		else {
+            cout<<"Cannot add more assignments. Maximum limit reached."<<endl;
+        }
+    }
+
+    void submitAssignment(int assignmentNumber) {
+        if (assignmentNumber > 0 && assignmentNumber <= assignmentCount) {
+            assignments[assignmentNumber - 1] = 1;
+            cout<<"Assignment "<<assignmentNumber<<" submitted successfully."<<endl;
+        } 
+		else {
+            cout<<"Invalid assignment number."<<endl;
+        }
+    }
+};
+
+class TA : public Student {
+private:
+    Student* students[10]; 
+    int studentCount;
+    string projects[2];   
+    int projectCount;
+
+public:
+    TA(string name, string id, string email, string password)
+        : Student(name, id, email, password), studentCount(0), projectCount(0) {
+        permissions[0] = "view_projects";
+        permissions[1] = "manage_students";
+    }
+
+    void display() override {
+        cout<<"\n--- TA Information ---"<<endl;
+        User::display();
+        cout<<"Assigned Students: ";
+        for (int i=0; i<studentCount; i++) {
+            cout << students[i]->getName() << " "; 
+        }
+        cout<<endl;
+        cout<<"Projects: ";
+        for (int i=0; i<projectCount; i++) {
+            cout<<projects[i]<<" ";
+        }
+        cout<<endl;
+    }
+
+    bool addStudent(Student* student) {
+        if (studentCount < 10) {
+            students[studentCount++] = student;
+            cout<<student->getName()<<" assigned to TA "<<getName()<<endl;
+            return true;
+        } 
+		else {
+            cout<<"TA "<<getName()<<" cannot manage more than 10 students."<<endl;
+            return false;
+        }
+    }
+
+    bool addProject(string projectName) {
+        if (projectCount < 2) {
+            projects[projectCount++] = projectName;
+            cout<<"Project "<<projectName<<" added to TA "<<getName()<<endl;
+            return true;
+        } 
+		else {
+            cout<<"TA "<<getName()<<" cannot manage more than 2 projects."<<endl;
+            return false;
+        }
+    }
+};
+
+class Professor : public User {
+ public:
+    Professor(string name, string id, string email, string password)
+        : User(name, id, new string[2]{"assign_projects", "full_lab_access"}, 2, email, password) {}
+
+    void display() override {
+        cout<<"\n--- Professor Information ---"<<endl;
+        User::display();
+    }
+
+    void assignProject(TA* ta, string projectName) {
+        if (ta->addProject(projectName)) {
+            cout<<"Project "<<projectName<<" assigned to TA "<<ta->getName()<<endl;
+        } 
+		else {
+            cout<<"TA "<<ta->getName()<<" cannot take more projects."<<endl;
+        }
+    }
+};
+
+void authenticateAndPerformAction(User* user, string action) {
+    string password;
+    cout<<"Enter password for "<<user->getName()<<": ";
+    cin>>password;
+
+    if (user->authenticate(password)) {
+        cout<<"Authentication successful."<<endl;
+        user->accessLab(action);
+    } 
+	else {
+        cout<<"Authentication failed."<<endl;
+    }
+}
+
+int main() {
+	cout<<"WAMIZA NOMAN 24K-0010\n"<<endl;	
+
+    Student student("Wamiza", "24k-0010", "k240010@nu.edu.pk", "password123");
+    student.addAssignment();
+    student.addAssignment();   
+    TA ta("Talha Shahid", "23k-0465", "k230465@nu.edu.pk", "ta_pass123");
+    ta.addStudent(&student);
+    ta.addProject("Project A");
+    Professor professor("Nahid Hanif", "P789", "nahid_Hanif@nu.edu.pk", "prof_pass123");
+    professor.assignProject(&ta, "Research Project");
+    student.submitAssignment(1);
+    cout << "\nDisplaying all users:" << endl;
+    student.display();
+    ta.display();
+    professor.display();
+    authenticateAndPerformAction(&student, "submit_assignment");
+    authenticateAndPerformAction(&ta, "view_projects");
+    authenticateAndPerformAction(&professor, "assign_projects");
+    return 0;
+}
