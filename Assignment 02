@@ -360,27 +360,27 @@ using namespace std;
 // 24K-0010 WAMIZA NOMAN
 
 class vehicle {
- protected:
+protected:
     string vehicleid;
     float speed;
     float capacity;
     float energyeffeciency;
     static int totaldeliveries;
- public:
+public:
     vehicle(string id, float sp, float cap, float eff) : vehicleid(id), speed(sp), capacity(cap), energyeffeciency(eff) {
         totaldeliveries++;
     }
 
     virtual void move() {
-        cout<<"vehicle "<<vehicleid<<" is moving generically."<<endl;
+        cout << "vehicle " << vehicleid << " is moving generically."<< endl;
     }
 
     virtual void command(string action, int packageid) {
-        cout<<"Base vehicle processing command: "<<action<<" for package "<<packageid<<endl;
+        cout << "Base vehicle processing command: " << action << " for package " << packageid << "\n";
     }
 
     virtual void command(string action, int packageid, string urgency) {
-        cout<<"Base vehicle processing command with urgency: "<<action<<", Package: "<<packageid<<", Urgency: "<<urgency<<endl;
+        cout << "Base vehicle processing command with urgency: " << action << ", Package: " << packageid << ", Urgency: " << urgency << "\n";
     }
 
     virtual float calculateETA(float distance) {
@@ -398,11 +398,11 @@ class vehicle {
 int vehicle::totaldeliveries = 0;
 
 bool operator==(const vehicle& v1, const vehicle& v2) {
-    return (v1.speed == v2.speed && v1.capacity == v2.capacity && v1.energyefficiency == v2.energyefficiency);
+    return (v1.speed == v2.speed && v1.capacity == v2.capacity && v1.energyeffeciency == v2.energyeffeciency);
 }
 
 vehicle resolveconflict(const vehicle& v1, const vehicle& v2) {
-    if ((v1.speed+v1.energyeffeciency)>(v2.speed+v2.energyeffeciency)) 
+    if ((v1.speed + v1.energyeffeciency) > (v2.speed + v2.energyeffeciency)) 
 	{
         return v1;
     } 
@@ -417,16 +417,16 @@ public:
     ramzandrone(string id) : vehicle(id, 150.0, 5.0, 90.0) {}
 
     void move() override {
-        cout<<"Drone "<<vehicleid<<" has taken flight and is navigating through the sky." <<endl;
+        cout<< "Drone " << vehicleid << " has taken flight and is navigating through the sky." << endl;
     }
 
     void command(string action, int packageid) override {
-        cout<<"Drone "<<vehicleid<<" delivering package "<<packageid<<" at normal speed."<<endl;
+        cout<< "Drone " << vehicleid << " delivering package " << packageid << " at normal speed."<< endl;
     }
 
     void command(string action, int packageid, string urgency) override {
-        if (urgency=="urgent")
-            cout<<"Drone "<<vehicleid<<" delivering URGENT Iftar package "<<packageid<<" at high speed."<<endl;
+        if (urgency == "urgent")
+            cout<< "Drone " << vehicleid << " delivering URGENT Iftar package " << packageid << " at high speed."<< endl;
         else
             command(action, packageid);
     }
@@ -437,16 +437,16 @@ public:
     ramzantimeship(string id) : vehicle(id, 100.0, 10.0, 80.0) {}
 
     void move() override {
-        cout<<"Timeship "<<vehicleid<<" verifying historical consistency and time traveling."<<endl;
+        cout<< "Timeship " << vehicleid << " verifying historical consistency and time traveling." << endl;
     }
 
     void command(string action, int packageid) override {
-        cout<<"Timeship "<<vehicleid<<" delivering package "<<packageid<<" in timeline."<<endl;
+        cout<< "Timeship " << vehicleid << " delivering package " << packageid << " in timeline." << endl;
     }
 
     void command(string action, int packageid, string urgency) override {
         if (urgency == "urgent")
-            cout<<"TimeShip "<<vehicleid<<" is validating  sensitive of URGENT package "<<packageid<<" within historical context."<<endl;
+            cout<< "TimeShip " << vehicleid << " is validating  sensitive of URGENT package " << packageid << " within historical context.\n";
         else
             command(action, packageid);
     }
@@ -457,16 +457,16 @@ public:
     ramzanhyperpod(string id) : vehicle(id, 120.0, 50.0, 85.0) {}
 
     void move() override {
-        cout<<"HyperPod "<<vehicleid<<" navigating underground tunnel network."<<endl;
+        cout<< "HyperPod " << vehicleid << " navigating underground tunnel network." << endl;
     }
 
     void command(string action, int packageid) override {
-        cout<<"HyperPod "<<vehicleid<<" transporting bulk package "<<packageid<<endl;
+        cout<< "HyperPod " << vehicleid << " transporting bulk package " << packageid << ".\n";
     }
 
     void command(string action, int packageid, string urgency) override {
         if (urgency == "urgent")
-            cout<<"HyperPod "<<vehicleid<<" handling URGENT bulk delivery for package "<<packageid<<endl;
+            cout<< "HyperPod " << vehicleid << " handling URGENT bulk delivery for package " << packageid << ".\n";
         else
             command(action, packageid);
     }
@@ -474,7 +474,7 @@ public:
 
 int main() {
 	cout<<"WAMIZA NOMAN 24K-0010\n"<<endl;
-
+    
     ramzandrone drone1("DRN0017");
     ramzantimeship ship1("TS003");
     ramzanhyperpod pod1("HYP055");
@@ -489,6 +489,7 @@ int main() {
     cout<< "Best vehicle for the task has ID: " << best.calculateETA(100.0) << " hours ETA for 100km.\n";
     return 0;
 }
+
 
 Task 4:
 #include <iostream>
