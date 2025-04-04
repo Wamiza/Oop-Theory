@@ -1,0 +1,189 @@
+Task 1:
+#include<iostream>
+#include<string>
+using namespace std;
+
+// 24K-0010 WAMIZA NOMAN
+
+class TransportationCard {
+private:
+    int cardID;
+    bool isActive;
+public:
+    TransportationCard(int id) : cardID(id), isActive(false) {}
+    void activateCard() {
+	    isActive = true;
+		}
+    void deactivateCard() {
+	    isActive = false; 
+		}
+    bool checkCardStatus() const { 
+	    return isActive; 
+		}
+};
+
+class User {
+protected:
+    string name;
+    int userID;
+    bool hasPaidFees;
+    string assignedStop;
+public:
+    User(string n, int id, string stop) : name(n), userID(id), assignedStop(stop), hasPaidFees(true) {}
+    virtual void payFees() = 0;
+    virtual void payFees(double discount) {
+	    cout<<"Discounted fee payment not applicable."<<endl; 
+	    }
+    virtual void tapCard() const = 0;
+    virtual void displayInfo() const {
+        cout<<"ID: "<<userID<<endl<<"Name: "<<name<<endl<<"Stop: "<<assignedStop<<endl<<"Paid Fees: "<<((hasPaidFees)?"Yes":"No")<<endl;
+    }
+    virtual ~User() {}
+};
+
+class Student : public User {
+private:
+    TransportationCard card;
+public:
+    Student(string n, int id, string stop) : User(n, id, stop), card(id) {}
+    void payFees() override {
+        hasPaidFees = true;
+        card.activateCard();
+        cout<<name<<" has paid semester fees. Card activated."<<endl;
+    }
+    void payFees(double discount) override {
+        hasPaidFees = true;
+        card.activateCard();
+        cout<<name<<" has paid semester fees with a discount of "<<discount<<"%"<<endl;
+    }
+    void tapCard() const override {
+        if (card.checkCardStatus())
+            cout<<name<<" attendance recorded."<<endl;
+        else
+            cout<<"Card inactive. Pay semester fees to activate."<<endl;
+    }
+};
+
+class Teacher : public User {
+public:
+    Teacher(string n, int id, string stop) : User(n, id, stop) {}
+    void payFees() override {
+        hasPaidFees = true;
+        cout<<name<<" has paid monthly transport fee."<<endl;
+    }
+    void tapCard() const override {
+        cout<<name<<" Teacher attendance recorded."<<endl;
+    }
+};
+
+class StaffMember : public User {
+public:
+    StaffMember(string n, int id, string stop) : User(n, id, stop) {}
+    void payFees() override {
+        hasPaidFees = true;
+        cout<<name<<" has paid monthly transport fee."<<endl;
+    }
+    void tapCard() const override {
+        cout<<name<<" staff attendance recorded."<<endl;
+    }
+};
+
+class BusRoute {
+private:
+    int routeID;
+    string routeName;
+    string* stops;
+    int stopCount;
+public:
+    BusRoute(int id, string name, string stopList[], int count) : routeID(id), routeName(name), stopCount(count) {
+        stops = new string[count];
+        for (int i = 0; i < count; i++) stops[i] = stopList[i];
+    }
+    void displayRoute() const {
+        cout<<"Route ID: "<<routeID<<endl<<"Name: "<<routeName<<endl<<"Stops: "<<endl;
+        for (int i=0; i <stopCount; i++) {
+		cout<<stops[i] << " ";
+        cout<<endl;
+        }
+    }
+    bool operator==(const BusRoute& other) const {
+        return (routeID==other.routeID && routeName==other.routeName);
+    }
+    ~BusRoute() { delete[] stops; }
+};
+
+class TransportSystem {
+private:
+    User** users;
+    BusRoute** routes;
+    int userCount, routeCount;
+    int maxUsers, maxRoutes;
+public:
+    TransportSystem(int userLimit, int routeLimit) : userCount(0), routeCount(0), maxUsers(userLimit), maxRoutes(routeLimit) {
+        users = new User*[maxUsers];
+        routes = new BusRoute*[maxRoutes];
+    }
+    void registerUser(User* user) {
+        if (userCount < maxUsers) {
+            users[userCount++] = user;
+        } 
+		else {
+            cout << "User limit reached!" << endl;
+        }
+    }
+    void addRoute(BusRoute* route) {
+        if (routeCount < maxRoutes) {
+            routes[routeCount++] = route;
+        } 
+		else {
+            cout << "Route limit reached!" << endl;
+        }
+    }
+    void displayUsers() const {
+        cout << "Registered Users:" << endl;
+        for (int i = 0; i < userCount; i++) users[i]->displayInfo();
+    }
+    void displayRoutes() const {
+        cout << "Available Routes:" << endl;
+        for (int i = 0; i < routeCount; i++) routes[i]->displayRoute();
+    }
+    ~TransportSystem() {
+        for (int i = 0; i < userCount; i++) delete users[i];
+        for (int i = 0; i < routeCount; i++) delete routes[i];
+        delete[] users;
+        delete[] routes;
+    }
+};
+
+int main() {
+	 
+	cout<<"WAMIZA NOMAN 24K-0010\n"<<endl;
+
+    TransportSystem system(10, 10);
+    cout<<"FAST Transportation System\n"<<endl;
+
+    system.registerUser(new Student("Alaya", 53, "A"));
+    system.registerUser(new Teacher("Sir Ahmed", 201, "B"));
+    system.registerUser(new StaffMember("Sir Ali", 301, "C"));
+    
+    string stops1[] = {"A", "B", "C"};
+    string stops2[] = {"D", "E", "F"};
+    BusRoute* route1 = new BusRoute(1, "Route 1", stops1, 3);
+    BusRoute* route2 = new BusRoute(2, "Route 2", stops2, 3);
+    
+    system.addRoute(route1);
+    system.addRoute(route2);
+    
+    system.displayUsers();
+    system.displayRoutes();
+    
+    if (*route1 == *route2) {
+        cout<<"Same Routes"<<endl;
+    } 
+	else {
+        cout<<"Routes are different."<<endl;
+    }
+    return 0;
+}
+
+Task 2:
